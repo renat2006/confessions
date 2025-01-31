@@ -71,7 +71,7 @@ function MessageForm() {
 
         try {
             // Отправка сообщения на сервер
-            const response = await fetch("/apii/add_message", {
+            const response = await fetch("/api/add_message", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
