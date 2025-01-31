@@ -71,7 +71,7 @@ function MessageForm() {
 
         try {
             // Отправка сообщения на сервер
-            const response = await fetch("/api/add_message", {
+            const response = await fetch("http://185.251.91.71:5000/add_message", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
