@@ -2,7 +2,8 @@ import DefaultLayout from "@/layouts/default";
 import * as React from "react";
 import { Button, Textarea } from "@heroui/react";
 import validator from "validator"; // Для валидации текста
-import DOMPurify from "dompurify"; // Для очистки текста от опасного контента
+import DOMPurify from "dompurify";
+import {Link} from "@heroui/link"; // Для очистки текста от опасного контента
 
 // Максимальная длина сообщения для Telegram
 const MAX_MESSAGE_LENGTH = 4096;
@@ -116,6 +117,7 @@ function MessageForm() {
     return (
         <DefaultLayout>
             <section className="flex flex-col items-center justify-center gap-4 py-8 md:py-10">
+                <Link href="https://forms.yandex.ru/u/679d6d47068ff0ad531e30d9/">Форма обратной связи</Link>
                 <div className="w-full max-w-2xl p-6 bg-white shadow-lg rounded-lg">
                     <h1 className="text-2xl font-bold mb-4">Отправьте сообщение</h1>
                     <form onSubmit={handleSubmit} className="space-y-4">
