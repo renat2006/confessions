@@ -3,7 +3,7 @@ import * as React from "react";
 import { Button, Textarea } from "@heroui/react";
 import validator from "validator"; // Для валидации текста
 import DOMPurify from "dompurify";
-import {Link} from "@heroui/link"; // Для очистки текста от опасного контента
+import { Link } from "@heroui/link"; // Для очистки текста от опасного контента
 
 // Максимальная длина сообщения для Telegram
 const MAX_MESSAGE_LENGTH = 4096;
@@ -71,7 +71,7 @@ function MessageForm() {
         });
 
         try {
-            // Отправка сообщения на сервер
+            // Отправка сообщения на ваш сервер
             const response = await fetch("/api/add_message", {
                 method: "POST",
                 headers: {
@@ -87,11 +87,33 @@ function MessageForm() {
                 setError("");
                 setLastSendTime(Date.now()); // Запоминаем время отправки
                 setCooldown(SEND_COOLDOWN); // Устанавливаем время блокировки
+
+                // Отправка сообщения на api.centraluniverse.ru/message
+                await sendToCentralUniverse(sanitizedMessage);
             } else {
                 setError(result.error || "Произошла ошибка при отправке сообщения.");
             }
         } catch (error) {
             setError("Произошла ошибка при отправке сообщения.");
+        }
+    };
+
+    // Функция для отправки сообщения на api.centraluniverse.ru/message
+    const sendToCentralUniverse = async (text) => {
+        try {
+            const response = await fetch("https://api.centraluniverse.ru/message", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({ message: text }), // Формат запроса
+            });
+
+            if (!response.ok) {
+                console.error("Ошибка при отправке сообщения на api.centraluniverse.ru:", await response.text());
+            }
+        } catch (error) {
+            console.error("Ошибка при отправке сообщения на api.centraluniverse.ru:", error);
         }
     };
 
@@ -117,7 +139,6 @@ function MessageForm() {
     return (
         <DefaultLayout>
             <section className="flex flex-col items-center justify-center gap-4 py-8 md:py-10">
-                <Link href="https://forms.yandex.ru/u/679d6d47068ff0ad531e30d9/">Форма обратной связи</Link>
                 <div className="w-full max-w-2xl p-6 bg-white shadow-lg rounded-lg">
                     <h1 className="text-2xl font-bold mb-4">Отправьте сообщение</h1>
                     <form onSubmit={handleSubmit} className="space-y-4">
@@ -158,6 +179,7 @@ function MessageForm() {
                         </div>
                     )}
                 </div>
+                <Link href="https://forms.yandex.ru/u/679d6d47068ff0ad531e30d9/">Форма обратной связи</Link>
             </section>
         </DefaultLayout>
     );
