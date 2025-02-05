@@ -29,9 +29,7 @@ function MessageForm() {
         if (!validator.isLength(text, { max: MAX_MESSAGE_LENGTH })) {
             return `Сообщение слишком длинное. Максимум ${MAX_MESSAGE_LENGTH} символов.`;
         }
-        if (!validator.isAscii(text)) {
-            return "Сообщение содержит недопустимые символы. Разрешены только русские и английские буквы, цифры и стандартные знаки препинания.";
-        }
+
         const uniqueChars = new Set(text.replace(/\s/g, ""));
         if (uniqueChars.size < 2) {
             return "Сообщение содержит слишком много повторяющихся символов.";
