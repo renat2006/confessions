@@ -29,7 +29,7 @@ function MessageForm() {
         if (!validator.isLength(text, { max: MAX_MESSAGE_LENGTH })) {
             return `Сообщение слишком длинное. Максимум ${MAX_MESSAGE_LENGTH} символов.`;
         }
-        if (!validator.isAscii(text) && !validator.matches(text, /^[\p{L}\p{N}\s.,!?\-()#№+{}'"`;:]+$/u)) {
+        if (!validator.isAscii(text)) {
             return "Сообщение содержит недопустимые символы. Разрешены только русские и английские буквы, цифры и стандартные знаки препинания.";
         }
         const uniqueChars = new Set(text.replace(/\s/g, ""));
