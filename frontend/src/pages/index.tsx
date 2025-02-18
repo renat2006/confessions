@@ -14,6 +14,13 @@ const FORBIDDEN_WORDS = [];
 // Время блокировки отправки (в миллисекундах)
 const SEND_COOLDOWN = 15000; // 15 секунд
 
+// Лимит запросов в минуту
+const RATE_LIMIT = 5; // Максимум 5 запросов в минуту
+const RATE_LIMIT_WINDOW = 60000; // 1 минута
+
+// Хранение количества запросов по IP
+const requestCounts = new Map();
+
 function MessageForm() {
     const [message, setMessage] = React.useState("");
     const [error, setError] = React.useState("");
@@ -53,6 +60,13 @@ function MessageForm() {
         // Проверка на блокировку отправки
         if (cooldown > 0) {
             setError(`Пожалуйста, подождите ${Math.ceil(cooldown / 1000)} секунд перед повторной отправкой.`);
+            return;
+        }
+
+        // Проверка на лимит запросов
+        const ip = await getClientIP(); // Получаем IP клиента
+        if (isRateLimited(ip)) {
+            setError("Слишком много запросов. Пожалуйста, попробуйте позже.");
             return;
         }
 
@@ -133,6 +147,29 @@ function MessageForm() {
             return () => clearInterval(timer); // Очистка таймера при размонтировании
         }
     }, [cooldown, lastSendTime]);
+
+    // Функция для получения IP клиента
+    const getClientIP = async () => {
+        const response = await fetch("https://api.ipify.org?format=json");
+        const data = await response.json();
+        return data.ip;
+    };
+
+    // Функция для проверки лимита запросов
+    const isRateLimited = (ip) => {
+        const now = Date.now();
+        const requestTimestamps = requestCounts.get(ip) || [];
+
+        // Удаляем старые запросы
+        const recentRequests = requestTimestamps.filter(timestamp => now - timestamp < RATE_LIMIT_WINDOW);
+
+        if (recentRequests.length >= RATE_LIMIT) {
+            return true;
+        }
+
+        requestCounts.set(ip, [...recentRequests, now]);
+        return false;
+    };
 
     return (
         <DefaultLayout>
