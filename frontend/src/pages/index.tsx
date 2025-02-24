@@ -101,12 +101,21 @@ function MessageForm() {
                 setCooldown(SEND_COOLDOWN); // Устанавливаем время блокировки
 
                 // Отправка сообщения на api.centraluniverse.ru/message
-                await sendToCentralUniverse(sanitizedMessage);
+                // await sendToCentralUniverse(sanitizedMessage);
             } else {
-                setError(result.error || "Произошла ошибка при отправке сообщения.");
+                // Обработка ошибок от API
+                if (response.status === 429) {
+                    setError("Слишком много запросов. Пожалуйста, попробуйте позже.");
+                } else if (response.status === 400) {
+                    setError(result.error || "Недопустимое сообщение.");
+                } else {
+                    setError("Произошла ошибка при отправке сообщения.");
+                }
+                console.error("Ошибка API:", result);
             }
         } catch (error) {
             setError("Произошла ошибка при отправке сообщения.");
+            console.error("Ошибка сети:", error);
         }
     };
 
@@ -150,9 +159,14 @@ function MessageForm() {
 
     // Функция для получения IP клиента
     const getClientIP = async () => {
-        const response = await fetch("https://api.ipify.org?format=json");
-        const data = await response.json();
-        return data.ip;
+        try {
+            const response = await fetch("https://api.ipify.org?format=json");
+            const data = await response.json();
+            return data.ip;
+        } catch (error) {
+            console.error("Ошибка при получении IP:", error);
+            return "unknown"; // Возвращаем значение по умолчанию
+        }
     };
 
     // Функция для проверки лимита запросов
