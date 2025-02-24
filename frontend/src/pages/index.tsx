@@ -47,9 +47,9 @@ function MessageForm() {
                 return `Сообщение содержит запрещенное слово: "${word}".`;
             }
         }
-        if (validator.isURL(text, { require_protocol: true })) {
-            return "Сообщение содержит ссылки. Ссылки не разрешены.";
-        }
+        // if (validator.isURL(text, { require_protocol: true })) {
+        //     return "Сообщение содержит ссылки. Ссылки не разрешены.";
+        // }
         return "";
     };
 
