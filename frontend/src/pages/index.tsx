@@ -30,7 +30,7 @@ function MessageForm() {
     const [csrfToken, setCsrfToken] = React.useState('');
 
     React.useEffect(() => {
-        fetch('/get-csrf-token')
+        fetch('/api/get-csrf-token')
             .then(response => response.json())
             .then(data => setCsrfToken(data.csrf_token));
     }, []);
