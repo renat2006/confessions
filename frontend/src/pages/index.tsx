@@ -12,7 +12,7 @@ const MAX_MESSAGE_LENGTH = 4096;
 const FORBIDDEN_WORDS = [];
 
 // Время блокировки отправки (в миллисекундах)
-const SEND_COOLDOWN = 15000; // 15 секунд
+const SEND_COOLDOWN = 60000; // 15 секунд
 
 // Лимит запросов в минуту
 const RATE_LIMIT = 5; // Максимум 5 запросов в минуту
@@ -27,6 +27,13 @@ function MessageForm() {
     const [submitted, setSubmitted] = React.useState(false);
     const [lastSendTime, setLastSendTime] = React.useState(null); // Время последней отправки
     const [cooldown, setCooldown] = React.useState(0); // Оставшееся время блокировки
+    const [csrfToken, setCsrfToken] = React.useState('');
+
+    React.useEffect(() => {
+        fetch('/get-csrf-token')
+            .then(response => response.json())
+            .then(data => setCsrfToken(data.csrf_token));
+    }, []);
 
     // Проверка валидности сообщения
     const validateMessage = (text) => {
@@ -88,6 +95,7 @@ function MessageForm() {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
+                    "X-CSRFToken": csrfToken
                 },
                 body: JSON.stringify({ content: sanitizedMessage }),
             });
