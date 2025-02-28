@@ -28,6 +28,12 @@ function MessageForm() {
     const [lastSendTime, setLastSendTime] = React.useState(null); // Время последней отправки
     const [cooldown, setCooldown] = React.useState(0); // Оставшееся время блокировки
     const [csrfToken, setCsrfToken] = React.useState('');
+    React.useEffect(() => {
+        fetch('/api/get-csrf-token')
+            .then(response => response.json())
+            .then(data => setCsrfToken(data.csrf_token));
+    }, []);
+
 
     // React.useEffect(() => {
     //     fetch('/api/get-csrf-token')
@@ -95,6 +101,7 @@ function MessageForm() {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
+                    "X-CSRFToken": csrfToken
                 },
                 body: JSON.stringify({ content: sanitizedMessage }),
             });
