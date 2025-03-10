@@ -12,7 +12,7 @@ const MAX_MESSAGE_LENGTH = 4096;
 const FORBIDDEN_WORDS = [];
 
 // Время блокировки отправки (в миллисекундах)
-const SEND_COOLDOWN = 60000; // 15 секунд
+const SEND_COOLDOWN = 60000 * 5; // 15 секунд
 
 // Лимит запросов в минуту
 const RATE_LIMIT = 5; // Максимум 5 запросов в минуту
@@ -68,6 +68,8 @@ function MessageForm() {
 
     // Обработка отправки формы
     const handleSubmit = async (e) => {
+        setLastSendTime(Date.now()); // Запоминаем время отправки
+        setCooldown(SEND_COOLDOWN);
         e.preventDefault();
 
         // Проверка на блокировку отправки
@@ -111,8 +113,7 @@ function MessageForm() {
             if (response.ok) {
                 setSubmitted(true);
                 setError("");
-                setLastSendTime(Date.now()); // Запоминаем время отправки
-                setCooldown(SEND_COOLDOWN); // Устанавливаем время блокировки
+                 // Устанавливаем время блокировки
 
                 // Отправка сообщения на api.centraluniverse.ru/message
                 // await sendToCentralUniverse(sanitizedMessage);
