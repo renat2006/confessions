@@ -9,7 +9,7 @@ import { Link } from "@heroui/link"; // Для очистки текста от 
 const MAX_MESSAGE_LENGTH = 4096;
 
 // Запрещенные слова (можно расширить)
-const FORBIDDEN_WORDS = ["сигма", "бой"];
+const FORBIDDEN_WORDS = [];
 
 // Время блокировки отправки (в миллисекундах)
 const SEND_COOLDOWN = 60000; // 15 секунд
